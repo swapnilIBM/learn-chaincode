@@ -181,7 +181,7 @@ func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		fmt.Println("Processed AddUser successfully. ")
 		return testBytes, nil
 	}
-	}
+	
 	fmt.Println("invoke did not find func: " + function)
 
 	return nil, errors.New("Received unknown function invocation: " + function)
