@@ -107,7 +107,6 @@ func AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) 
 	 
 	md.AirMilesID = strconv.Itoa(secs)
 	md.PointBalance	= usr.AirMilesPoint
-	body, err := json.Marshal(usr)
 	md.CreatedDate = now
 	md.UpdatedDate = now
 	
