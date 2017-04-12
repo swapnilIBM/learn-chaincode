@@ -195,6 +195,8 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	// Handle different functions
 	if function == "read" { //read a variable
 		return t.read(stub, args)
+	} else if function == "GetBalance" { //read a variable
+		return t.GetBalance(args,stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
