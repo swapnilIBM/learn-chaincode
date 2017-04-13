@@ -83,8 +83,8 @@ func (t *AirMilesChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 	return nil, nil
 }
 
-func (t *AirMilesChaincode) AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
-	fmt.Println("In services.AddUser start ")
+func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+	fmt.Println("In services.adduser start ")
 	
 	//var usr UserDetails
 	usr := &UserDetails{}
@@ -132,12 +132,12 @@ func (t *AirMilesChaincode) AddUser(userJSON string, stub shim.ChaincodeStubInte
 		
 	
 	fmt.Println("Created User  with Key : "+ usr.UserID)
-	fmt.Println("In initialize.AddUser end ")
+	fmt.Println("In initialize.adduser end ")
 	return nil,nil	
 	
 }
 
-func (t *AirMilesChaincode) GetBalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
+func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.GetUsers start ")
 
 	key := userID
@@ -174,15 +174,15 @@ func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
 		return t.write(stub, args)
-	} else if function == "AddUser" {
+	} else if function == "adduser" {
 		var testBytes []byte
-		fmt.Println("invoking AddUser " + function)
-		testBytes,err := t.AddUser(args[0],stub)
+		fmt.Println("invoking adduser " + function)
+		testBytes,err := t.adduser(args[0],stub)
 		if err != nil {
-			fmt.Println("Error performing AddUser ")
+			fmt.Println("Error performing adduser ")
 			return nil, err
 		}
-		fmt.Println("Processed AddUser successfully. ")
+		fmt.Println("Processed adduser successfully. ")
 		return testBytes, nil
 	}
 	
@@ -198,8 +198,8 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	// Handle different functions
 	if function == "read" { //read a variable
 		return t.read(stub, args)
-	} else if function == "GetBalance" { //Get a miles point balance
-		return t.GetBalance(args[0],stub)
+	} else if function == "getbalance" { //Get a miles point balance
+		return t.getbalance(args[0],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
