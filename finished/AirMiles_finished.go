@@ -143,6 +143,8 @@ func (t *AirMilesChaincode) GetBalance(userID string, stub shim.ChaincodeStubInt
 	key := userID
 	var users UserDetails
 	var mdet MilesDetails
+	var balance string
+	var byteBalance []byte
 	userBytes, err := stub.GetState(key)
 	if err != nil {
 		fmt.Println("Error retrieving Users" , userID)
@@ -166,7 +168,7 @@ func (t *AirMilesChaincode) GetBalance(userID string, stub shim.ChaincodeStubInt
 // Invoke isur entry point to invoke a chaincode function
 func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
-
+	var testBytes []byte
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
@@ -195,8 +197,8 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	// Handle different functions
 	if function == "read" { //read a variable
 		return t.read(stub, args)
-	} else if function == "GetBalance" { //read a variable
-		return t.GetBalance(args,stub)
+	} else if function == "GetBalance" { //Get a miles point balance
+		return t.GetBalance(args[0],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
