@@ -176,7 +176,7 @@ func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		return t.write(stub, args)
 	} else if function == "AddUser" {
 		fmt.Println("invoking AddUser " + function)
-		testBytes,err := AddUser(args[0],stub)
+		testBytes,err := t.AddUser(args[0],stub)
 		if err != nil {
 			fmt.Println("Error performing AddUser ")
 			return nil, err
