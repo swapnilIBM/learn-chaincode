@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-	"strings"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"encoding/json"
 )
@@ -84,7 +83,7 @@ func (t *AirMilesChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 	return nil, nil
 }
 
-func AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+func (t *AirMilesChaincode) AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.AddUser start ")
 	
 	//var usr UserDetails
@@ -103,12 +102,12 @@ func AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) 
 	md.UserID = usr.UserID;
 	now := time.Now()
     secs := now.Unix()
-	fmt.Println("AirMilesID is : ", strconv.Itoa(secs))
+	fmt.Println("AirMilesID is : ", strconv.FormatInt(int64(secs), 10))
 	 
-	md.AirMilesID = strconv.Itoa(secs)
+	md.AirMilesID = strconv.FormatInt(int64(secs), 10)
 	md.PointBalance	= usr.AirMilesPoint
-	md.CreatedDate = now
-	md.UpdatedDate = now
+	md.CreatedDate = now.String()
+	md.UpdatedDate = now.String()
 	
 	usr.AirMilesID = md.AirMilesID 	
 	body, err := json.Marshal(usr)
@@ -138,7 +137,7 @@ func AddUser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) 
 	
 }
 
-func GetBalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
+func (t *AirMilesChaincode) GetBalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.GetUsers start ")
 
 	key := userID
@@ -147,7 +146,7 @@ func GetBalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) 
 	userBytes, err := stub.GetState(key)
 	if err != nil {
 		fmt.Println("Error retrieving Users" , userID)
-		return users, errors.New("Error retrieving Users" + userID)
+		return nil, errors.New("Error retrieving Users" + userID)
 	}
 	err = json.Unmarshal(userBytes, &users)
 	fmt.Println("Users   : " , users);
@@ -158,7 +157,9 @@ func GetBalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) 
 	
 	balance = mdet.PointBalance
 	
-	return []byte(balance), nil
+	byteBalance = []byte(balance)
+	
+	return byteBalance, nil
 }
 
 
