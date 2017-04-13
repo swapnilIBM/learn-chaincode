@@ -47,7 +47,7 @@ type MilesDetails struct{
 	CreatedDate string `json:"CreatedDate"`
 	UpdatedDate string `json:"UpdatedDate"`
 }
-
+	
 type TripDetails struct{
 	TripID string `json:"TripID"`
 	AirMilesID string `json:"AirMilesID"`
@@ -82,6 +82,67 @@ func (t *AirMilesChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 
 	return nil, nil
 }
+
+
+func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+	fmt.Println("In services.adduser start ")
+	
+	//var usr UserDetails
+	var users UserDetails
+	var mdet MilesDetails
+	trip := &TripDetails{}
+	
+	
+	err := json.Unmarshal([]byte(tripJSON), trip)
+	if err != nil {
+		fmt.Println("Failed to unmarshal trip ")
+	}	
+	
+		
+	fmt.Println("AirMilesID ID : ", trip.AirMilesID)
+	
+	trip.TripID = trip.DepartureTime[:len(trip.DepartureTime)-4]
+	
+	mdBytes, err := stub.GetState(trip.AirMilesID)
+	err = json.Unmarshal(mdBytes, &mdet)
+	
+	var PointBalanceI int
+	var PointsRewardedI int
+	var PointsConsumedI int
+	
+	PointBalanceI,_ := strconv.Atoi(mdet.PointBalance)
+	PointsRewardedI,_ := strconv.Atoi(trip.PointsRewarded)
+	PointsConsumedI,_ := strconv.Atoi(trip.PointsConsumed)
+	mdet.PointBalance= strconv.Itoa(PointBalanceI + PointsRewardedI - PointsConsumedI)
+	mdet.UpdatedDate = trip.DepartureTime
+	
+	 	
+	body, err := json.Marshal(mdet)
+	if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body))	
+	err = stub.PutState(mdet.AirMilesID, []byte(string(body)))
+	if err != nil {
+		fmt.Println("Failed to create User ")
+	}
+	body1, err := json.Marshal(trip)
+	
+	if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body1))	
+	err = stub.PutState(trip.AirMilesID+"_"+trip.TripID, []byte(string(body1)))
+	if err != nil {
+		fmt.Println("Failed to create miles details ")
+	}
+			
+	fmt.Println("Created User  with Key : "+ usr.UserID)
+	fmt.Println("In initialize.adduser end ")
+	return nil,nil	
+	
+}
+
 
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.adduser start ")
@@ -119,6 +180,12 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
 	if err != nil {
 		fmt.Println("Failed to create User ")
 	}
+	//Storing miles id
+	err = stub.PutState(usr.UserID, []byte(string(usr.AirMilesID)))
+	if err != nil {
+		fmt.Println("Failed to set Miles ID")
+	}
+	
 	body1, err := json.Marshal(md)
 	
 	if err != nil {
@@ -136,6 +203,25 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
 	return nil,nil	
 	
 }
+
+
+func (t *AirMilesChaincode) getmilesid(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
+	fmt.Println("In query.GetUsers start ")
+
+	key := userID
+	var users UserDetails
+	var mdet MilesDetails
+	var balance string
+	
+	bytemilesid, err := stub.GetState(key)
+	if err != nil {
+		fmt.Println("Error retrieving milesid for " , userID)
+		return nil, errors.New("Error retrieving milesid for" + userID)
+	}
+	
+	return bytemilesid, nil
+}
+
 
 func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.GetUsers start ")
@@ -184,7 +270,19 @@ func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		}
 		fmt.Println("Processed adduser successfully. ")
 		return testBytes, nil
+	} else if function == "addtrip" {
+		var testBytes []byte
+		fmt.Println("invoking addtrip " + function)
+		testBytes,err := t.addtrip(args[0],stub)
+		if err != nil {
+			fmt.Println("Error performing addtrip ")
+			return nil, err
+		}
+		fmt.Println("Processed addtrip successfully. ")
+		return testBytes, nil
 	}
+	
+	
 	
 	fmt.Println("invoke did not find func: " + function)
 
@@ -200,6 +298,8 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		return t.read(stub, args)
 	} else if function == "getbalance" { //Get a miles point balance
 		return t.getbalance(args[0] + "_" + args[1],stub)
+	} else if function == "getmilesid" { //Get a miles id 
+		return t.getbalance(args[0],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
