@@ -168,13 +168,14 @@ func (t *AirMilesChaincode) GetBalance(userID string, stub shim.ChaincodeStubInt
 // Invoke isur entry point to invoke a chaincode function
 func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
-	var testBytes []byte
+	
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
 		return t.write(stub, args)
 	} else if function == "AddUser" {
+		var testBytes []byte
 		fmt.Println("invoking AddUser " + function)
 		testBytes,err := t.AddUser(args[0],stub)
 		if err != nil {
