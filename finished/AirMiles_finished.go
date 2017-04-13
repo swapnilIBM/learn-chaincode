@@ -115,7 +115,7 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
         panic(err)
     }
     fmt.Println(string(body))	
-	err = stub.PutState(usr.UserID + "_" + usr.UserType, []byte(string(body)))
+	err = stub.PutState(usr.UserID + "_" + usr.PhoneNumber, []byte(string(body)))
 	if err != nil {
 		fmt.Println("Failed to create User ")
 	}
@@ -199,7 +199,7 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	if function == "read" { //read a variable
 		return t.read(stub, args)
 	} else if function == "getbalance" { //Get a miles point balance
-		return t.getbalance(args[0],stub)
+		return t.getbalance(args[0] + "_" + args[1],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
