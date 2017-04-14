@@ -345,7 +345,8 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		j = len(tripdetails)
 		var str string
 		for i := 0; i < j; i++ {
-			str=str+"#^^^"+json.Marshal(tripdetails[i])
+			body, err := json.Marshal(tripdetails[i])
+			str=str+"#^^^"+string(body)
 			fmt.Println("value of s is " + str)
 		}
 		
