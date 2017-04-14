@@ -148,7 +148,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 
 	key := userID
 	tdate := traveldate
-	var trip TripDetails
+	//var trip TripDetails
 	var triparray string
 	var milesid string
 	var bytemilesid []byte
