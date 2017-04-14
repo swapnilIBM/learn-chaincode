@@ -155,7 +155,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 	var milesid string
 	var bytemilesid []byte
 	var bytetrip []byte
-	var hours []string
+	//var hours []string
 	hours := []string{"00","01", "02", "03","04","05", "06", "07","08","09", "10", "11","12","13", "14", "15","16","17", "18", "19","20","21", "22", "23"}
 	bytemilesid,err := t.getmilesid(key,stub);
 	if err != nil {
@@ -172,7 +172,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 		if err != nil {
 			fmt.Printf("Error while unmarshaling the trip : %s", err)
 		} else {
-			TripDetails[j] = trip
+			triparray[j] = trip
 			j += 1
 		}
 		
