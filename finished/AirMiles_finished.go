@@ -299,7 +299,7 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	} else if function == "getbalance" { //Get a miles point balance
 		return t.getbalance(args[0] + "_" + args[1],stub)
 	} else if function == "getmilesid" { //Get a miles id 
-		return t.getbalance(args[0],stub)
+		return t.getmilesid(args[0],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
