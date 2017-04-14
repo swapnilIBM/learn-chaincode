@@ -335,6 +335,13 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		return t.getbalance(args[0] + "_" + args[1],stub)
 	} else if function == "getmilesid" { //Get a miles id 
 		return t.getmilesid(args[0],stub)
+	} else if function == "gettripdetails" { //Get a miles id 
+		var tripdetails []TripDetails
+		tripdetails,err := t.gettripdetails(args[0],args[1],stub)
+		 if err != nil {
+		fmt.Println("Failed to get trip details ")
+	}
+		return []byte(string(tripdetails))
 	}
 	fmt.Println("query did not find func: " + function)
 
