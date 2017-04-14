@@ -143,15 +143,16 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 	
 }
 
-func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stub shim.ChaincodeStubInterface)([]TripDetails, error) {
+func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.gettripdetails start ")
 
 	key := userID
 	tdate := traveldate
 	var trip TripDetails
-	var triparray []TripDetails
+	var triparray string
 	var milesid string
 	var bytemilesid []byte
+	
 	
 	//var hours []string
 	hours := []string{"00","01", "02", "03","04","05", "06", "07","08","09", "10", "11","12","13", "14", "15","16","17", "18", "19","20","21", "22", "23"}
@@ -162,21 +163,21 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 	}
 	milesid = string(bytemilesid);
 	
-	j := 0
 	for i := 0; i < 24; i++ {
 		var bytetrip []byte
+		
 		bytetrip,err := stub.GetState(milesid + "_"+tdate+ hours[i]);
 		err = json.Unmarshal(bytetrip, &trip)
 		if err != nil {
 			fmt.Printf("Error while unmarshaling the trip : %s", err)
 		} else {
-			triparray[j] = trip
-			j += 1
+			body, err := json.Marshal(trip)
+			triparray = triparray + "^^^^^"+ string(body)
 		}
 		
 	}
 	
-	return triparray, nil
+	return []byte(triparray), nil
 }
 
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
@@ -336,22 +337,7 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 	} else if function == "getmilesid" { //Get a miles id 
 		return t.getmilesid(args[0],stub)
 	} else if function == "gettripdetails" { //Get a miles id 
-		var tripdetails []TripDetails
-		var err error
-		tripdetails,err := t.gettripdetails(args[0],args[1],stub)
-		if err != nil {
-			fmt.Println("Failed to get trip details ")
-		}
-		var j int
-		j = len(tripdetails)
-		var str string
-		for i := 0; i < j; i++ {
-			body, err := json.Marshal(tripdetails[i])
-			str=str+"#^^^"+string(body)
-			fmt.Println("value of s is " + str)
-		}
-		
-		return []byte(str),nil
+		return t.gettripdetails(args[0],args[1],stub)
 	}
 	fmt.Println("query did not find func: " + function)
 
