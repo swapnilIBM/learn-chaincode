@@ -143,6 +143,43 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 	
 }
 
+func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stub shim.ChaincodeStubInterface)([]TripDetails, error) {
+	fmt.Println("In query.gettripdetails start ")
+
+	key := userID
+	tdate := traveldate
+	var users UserDetails
+	var mdet MilesDetails
+	var trip TripDetails
+	var triparray []TripDetails
+	var milesid string
+	var bytemilesid []byte
+	var bytetrip []byte
+	var hours []string
+	hours := []string{"00","01", "02", "03","04","05", "06", "07","08","09", "10", "11","12","13", "14", "15","16","17", "18", "19","20","21", "22", "23"}
+	bytemilesid,err := t.getmilesid(key,stub);
+	if err != nil {
+		fmt.Println("Error retrieving trip details for user" , key)
+		return nil, errors.New("Error retrieving trip details for user" + key)
+	}
+	milesid = string(bytemilesid);
+	
+	j := 0
+	for i := 0; i < 24; i++ {
+		
+		bytetrip,err := stub.GetState(milesid + "_"+tdate+ hours[i]);
+		err = json.Unmarshal(bytetrip, &trip)
+		if err != nil {
+			fmt.Printf("Error while unmarshaling the trip : %s", err)
+		} else {
+			TripDetails[j] = trip
+			j += 1
+		}
+		
+	}
+	
+	return TripDetails, nil
+}
 
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.adduser start ")
