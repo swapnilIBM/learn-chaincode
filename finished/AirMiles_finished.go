@@ -341,8 +341,15 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		if err != nil {
 			fmt.Println("Failed to get trip details ")
 		}
-		fmt.Println(" value of Array is " + json.Marshal(tripdetails))
-		return json.Marshal(tripdetails)
+		var j int
+		j = len(tripdetails)
+		var str string
+		for i := 0; i < j; i++ {
+			str=str+"#^^^"+json.Marshal(tripdetails[i])
+			fmt.Println("value of s is " + str)
+		}
+		
+		return []byte(str)
 	}
 	fmt.Println("query did not find func: " + function)
 
