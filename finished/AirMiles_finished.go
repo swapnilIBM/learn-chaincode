@@ -337,6 +337,7 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		return t.getmilesid(args[0],stub)
 	} else if function == "gettripdetails" { //Get a miles id 
 		var tripdetails []TripDetails
+		var err error
 		tripdetails,err := t.gettripdetails(args[0],args[1],stub)
 		if err != nil {
 			fmt.Println("Failed to get trip details ")
