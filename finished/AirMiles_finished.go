@@ -106,9 +106,9 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 	mdBytes, err := stub.GetState(trip.AirMilesID)
 	err = json.Unmarshal(mdBytes, &mdet)
 	
-	var PointBalanceI int
-	var PointsRewardedI int
-	var PointsConsumedI int
+	//var PointBalanceI int
+	//var PointsRewardedI int
+	//var PointsConsumedI int
 	
 	PointBalanceI,_ := strconv.Atoi(mdet.PointBalance)
 	PointsRewardedI,_ := strconv.Atoi(trip.PointsRewarded)
@@ -124,7 +124,7 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
     fmt.Println(string(body))	
 	err = stub.PutState(mdet.AirMilesID, []byte(string(body)))
 	if err != nil {
-		fmt.Println("Failed to create User ")
+		fmt.Println("Failed to update miles balance ")
 	}
 	body1, err := json.Marshal(trip)
 	
@@ -137,7 +137,7 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 		fmt.Println("Failed to create miles details ")
 	}
 			
-	fmt.Println("Created User  with Key : "+ usr.UserID)
+	fmt.Println("Created trip  with Key : "+ trip.TripID)
 	fmt.Println("In initialize.adduser end ")
 	return nil,nil	
 	
