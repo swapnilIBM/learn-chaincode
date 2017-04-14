@@ -168,7 +168,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 		//var err1 error 
 		bytetrip,err := stub.GetState(milesid + "_"+tdate+ hours[i]);
 		//err = json.Unmarshal(bytetrip, &trip)
-		if err1 != nil {
+		if err != nil {
 			fmt.Printf("Error while unmarshaling the trip : %s", err)
 		} else {
 			//body, err := json.Marshal(trip)
