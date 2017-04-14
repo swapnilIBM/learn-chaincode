@@ -350,7 +350,7 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 			fmt.Println("value of s is " + str)
 		}
 		
-		return []byte(str)
+		return []byte(str),nil
 	}
 	fmt.Println("query did not find func: " + function)
 
