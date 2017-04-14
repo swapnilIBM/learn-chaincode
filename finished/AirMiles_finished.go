@@ -88,7 +88,7 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 	fmt.Println("In services.adduser start ")
 	
 	//var usr UserDetails
-	var users UserDetails
+	//var users UserDetails
 	var mdet MilesDetails
 	trip := &TripDetails{}
 	
@@ -209,9 +209,9 @@ func (t *AirMilesChaincode) getmilesid(userID string, stub shim.ChaincodeStubInt
 	fmt.Println("In query.GetUsers start ")
 
 	key := userID
-	var users UserDetails
-	var mdet MilesDetails
-	var balance string
+//	var users UserDetails
+	//var mdet MilesDetails
+	//var balance string
 	
 	bytemilesid, err := stub.GetState(key)
 	if err != nil {
