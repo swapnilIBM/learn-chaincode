@@ -28,7 +28,7 @@ import (
 // AirMilesChaincode example simple Chaincode implementation
 type AirMilesChaincode struct {
 }
-
+//User table
 type UserDetails struct{
 	UserID string `json:"UserID"`
 	FirstName string `json:"FirstName"`
@@ -39,7 +39,7 @@ type UserDetails struct{
 	AirMilesPoint string `json:"AirMilesPoint"`
 }
 
-
+// Miles Details table
 type MilesDetails struct{
 	UserID string `json:"UserID"`
 	AirMilesID string `json:"AirMilesID"`
@@ -47,7 +47,7 @@ type MilesDetails struct{
 	CreatedDate string `json:"CreatedDate"`
 	UpdatedDate string `json:"UpdatedDate"`
 }
-	
+//Trip details table
 type TripDetails struct{
 	TripID string `json:"TripID"`
 	AirMilesID string `json:"AirMilesID"`
@@ -83,7 +83,7 @@ func (t *AirMilesChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 	return nil, nil
 }
 
-
+// addtrip function
 func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.adduser start ")
 	
@@ -142,7 +142,7 @@ func (t *AirMilesChaincode) addtrip(tripJSON string, stub shim.ChaincodeStubInte
 	return nil,nil	
 	
 }
-
+//getting trip details for a requested day
 func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.gettripdetails start ")
 
@@ -169,17 +169,17 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 		bytetrip,err := stub.GetState(milesid + "_"+tdate+ hours[i]);
 		//err = json.Unmarshal(bytetrip, &trip)
 		if err != nil {
-			fmt.Printf("Error while unmarshaling the trip : %s", err)
+			fmt.Printf("Error while retrieving the trip : %s", err)
 		} else {
 			//body, err := json.Marshal(trip)
-			triparray = triparray + "^^^^^"+ string(bytetrip)
+			triparray = triparray + string(bytetrip)
 		}
 		
 	}
 	
 	return []byte(triparray), nil
 }
-
+//adding user
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.adduser start ")
 	
@@ -193,7 +193,7 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
 	
 		
 	fmt.Println("User ID : ",usr.UserID)
-	
+	// default 100 points
 	usr.AirMilesPoint = "100"
 	
 	md.UserID = usr.UserID;
@@ -214,7 +214,7 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
     fmt.Println(string(body))	
 	err = stub.PutState(usr.UserID + "_" + usr.PhoneNumber, []byte(string(body)))
 	if err != nil {
-		fmt.Println("Failed to create User ")
+		fmt.Println("Failed to set User ")
 	}
 	//Storing miles id
 	err = stub.PutState(usr.UserID, []byte(string(usr.AirMilesID)))
@@ -230,19 +230,19 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
     fmt.Println(string(body1))	
 	err = stub.PutState(md.AirMilesID, []byte(string(body1)))
 	if err != nil {
-		fmt.Println("Failed to create miles details ")
+		fmt.Println("Failed to put miles details ")
 	}
 		
 	
-	fmt.Println("Created User  with Key : "+ usr.UserID)
+	fmt.Println("Created User with Key : "+ usr.UserID)
 	fmt.Println("In initialize.adduser end ")
 	return nil,nil	
 	
 }
 
-
+//retriving miles id using getmilesid
 func (t *AirMilesChaincode) getmilesid(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
-	fmt.Println("In query.GetUsers start ")
+	fmt.Println("In query.getmilesid start ")
 
 	key := userID
 //	var users UserDetails
@@ -254,11 +254,11 @@ func (t *AirMilesChaincode) getmilesid(userID string, stub shim.ChaincodeStubInt
 		fmt.Println("Error retrieving milesid for " , userID)
 		return nil, errors.New("Error retrieving milesid for" + userID)
 	}
-	
+	fmt.Println("In query.getmilesid end ")
 	return bytemilesid, nil
 }
 
-
+//geting the airmile point balance using getbalance
 func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.GetUsers start ")
 
@@ -274,7 +274,7 @@ func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInt
 	}
 	err = json.Unmarshal(userBytes, &users)
 	fmt.Println("Users   : " , users);
-	fmt.Println("In query.GetUsers end ")
+	
 	
 	mdBytes, err := stub.GetState(users.AirMilesID)
 	err = json.Unmarshal(mdBytes, &mdet)
@@ -282,6 +282,7 @@ func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInt
 	balance = mdet.PointBalance
 	
 	byteBalance = []byte(balance)
+	fmt.Println("In query.GetUsers end ")
 	
 	return byteBalance, nil
 }
