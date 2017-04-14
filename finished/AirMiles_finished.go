@@ -178,7 +178,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 		
 	}
 	
-	return TripDetails, nil
+	return triparray, nil
 }
 
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
