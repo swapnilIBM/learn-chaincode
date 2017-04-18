@@ -336,26 +336,19 @@ func (t *AirMilesChaincode) getUser(userID string, phonenumber string,stub shim.
 
 	userkey := userID
 	userph := phonenumber
-	//var userphone []byte
+	var userphone []byte
 	//userphone = []byte("")
+	userphone, err := stub.GetState(userkey + "_PhoneNumber")
+	if err != nil {
+		fmt.Println("Error retrieving user phone for " , userkey)
+		return nil, errors.New("Error retrieving user phone for" + userkey)
+	}
 	if userph != "" {
 		userph = strings.TrimSpace(phonenumber)
-		if len(userph) != 10 {
-			userphone, err := stub.GetState(userkey + "_PhoneNumber")
-			if err != nil {
-				fmt.Println("Error retrieving user phone for " , userkey)
-				return nil, errors.New("Error retrieving user phone for" + userkey)
-			}
-		} else {
+		if len(userph) == 10 {
 			userphone = []byte(userph)
 		}
-	} else {
-		userphone, err := stub.GetState(userkey + "_PhoneNumber")
-		if err != nil {
-			fmt.Println("Error retrieving user phone for " , userkey)
-			return nil, errors.New("Error retrieving user phone for" + userkey)
-		}
-	}
+	} 
 	
 	var users UserDetails
 	//var mdet MilesDetails
