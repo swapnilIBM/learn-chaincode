@@ -184,7 +184,7 @@ func (t *AirMilesChaincode) gettripdetails(userID string, traveldate string, stu
 //adding user
 func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.adduser start ")
-	fmt.Println("User received is " + userJSON)
+	fmt.Println("User received is ", userJSON)
 	//var usr UserDetails
 	usr := &UserDetails{}
 	md := &MilesDetails{}
@@ -195,7 +195,7 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
 	
 		
 	fmt.Println("User ID : ",usr.UserID)
-	fmt.Println("User DOB is : " usr.DOB)
+	fmt.Println("User DOB is : ", usr.DOB)
 	// default 100 points
 	usr.AirMilesPoint = "100"
 	
