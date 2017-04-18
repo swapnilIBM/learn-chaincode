@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"strings"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"encoding/json"
 )
@@ -296,7 +297,7 @@ func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInt
 func (t *AirMilesChaincode) addmilesbetweendestinations(source string, destination string, points string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	fmt.Println("In services.addmilesbetweendestinations start ")
 	
-	//var usr UserDetails
+	var err error
 	//var users UserDetails
 	//var mdet MilesDetails
 	//trip := &TripDetails{}
@@ -337,7 +338,8 @@ func (t *AirMilesChaincode) getUser(userID string, phonenumber string,stub shim.
 	userph := phonenumber
 	var userphone []byte
 	
-	if userph != nil {
+	if userph != "" {
+		userph = strings.TrimSpace(phonenumber)
 		if len(userph) != 10 {
 			userphone, err := stub.GetState(userkey + "_PhoneNumber")
 			if err != nil {
