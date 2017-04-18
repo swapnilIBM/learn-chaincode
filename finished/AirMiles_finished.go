@@ -37,6 +37,7 @@ type UserDetails struct{
 	AirMilesID string `json:"AirMilesID"`
 	UserType string `json:"UserType"`
 	AirMilesPoint string `json:"AirMilesPoint"`
+	DOB string `json:"DOB"`
 }
 
 // Miles Details table
@@ -216,6 +217,10 @@ func (t *AirMilesChaincode) adduser(userJSON string, stub shim.ChaincodeStubInte
 	if err != nil {
 		fmt.Println("Failed to set User ")
 	}
+	err = stub.PutState(usr.UserID + "_PhoneNumber" , []byte(usr.PhoneNumber))
+	if err != nil {
+		fmt.Println("Failed to set User phone Number")
+	}
 	//Storing miles id
 	err = stub.PutState(usr.UserID, []byte(string(usr.AirMilesID)))
 	if err != nil {
@@ -285,6 +290,89 @@ func (t *AirMilesChaincode) getbalance(userID string, stub shim.ChaincodeStubInt
 	fmt.Println("In query.GetUsers end ")
 	
 	return byteBalance, nil
+}
+
+// addmilesbetweendestinations function
+func (t *AirMilesChaincode) addmilesbetweendestinations(source string, destination string, points string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+	fmt.Println("In services.addmilesbetweendestinations start ")
+	
+	//var usr UserDetails
+	//var users UserDetails
+	//var mdet MilesDetails
+	//trip := &TripDetails{}
+	err = stub.PutState(source + "_" + destination, []byte(points))
+	if err != nil {
+		fmt.Println("Failed to add miles source & destination : " +  source + "_" + destination)
+	}
+	fmt.Println("In services.addmilesbetweendestinations End ")
+	return nil,nil	
+	
+}
+
+// getmilesbetweendestinations function
+func (t *AirMilesChaincode) getmilesbetweendestinations(source string, destination string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+	fmt.Println("In services.getmilesbetweendestinations start ")
+	
+	//var usr UserDetails
+	//var users UserDetails
+	//var mdet MilesDetails
+	//trip := &TripDetails{}
+	bytemilesid, err := stub.GetState(source + "_" + destination)
+	if err != nil {
+		fmt.Println("Failed to add miles source & destination : " +  source + "_" + destination)
+		return nil, errors.New("Failed to add miles source & destination : " +  source + "_" + destination)
+	}
+		
+	fmt.Println("In services.getmilesbetweendestinations End ")
+	return bytemilesid, nil	
+	
+}
+
+
+//geting the user details
+func (t *AirMilesChaincode) getUser(userID string, phonenumber string,stub shim.ChaincodeStubInterface)([]byte, error) {
+	fmt.Println("In query.GetUser start ")
+
+	userkey := userID
+	userph := phonenumber
+	var userphone []byte
+	
+	if userph != nil {
+		if len(userph) != 10 {
+			userphone, err := stub.GetState(userkey + "_PhoneNumber")
+			if err != nil {
+				fmt.Println("Error retrieving user phone for " , userkey)
+				return nil, errors.New("Error retrieving user phone for" + userkey)
+			}
+		} else {
+			userphone = []byte(userph)
+		}
+	} else {
+		userphone, err := stub.GetState(userkey + "_PhoneNumber")
+		if err != nil {
+			fmt.Println("Error retrieving user phone for " , userkey)
+			return nil, errors.New("Error retrieving user phone for" + userkey)
+		}
+	}
+	
+	var users UserDetails
+	//var mdet MilesDetails
+	//var balance string
+	//var userphone []byte
+	
+	
+	userBytes, err := stub.GetState(userkey + "_" + string(userphone))
+	if err != nil {
+		fmt.Println("Error retrieving Users" , userkey)
+		return nil, errors.New("Error retrieving Users" + userkey)
+	}
+	err = json.Unmarshal(userBytes, &users)
+	fmt.Println("Users   : " , users);
+	
+	
+	fmt.Println("In query.GetUser end ")
+	
+	return userBytes, nil
 }
 
 
