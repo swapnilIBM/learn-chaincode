@@ -337,7 +337,7 @@ func (t *AirMilesChaincode) getUser(userID string, phonenumber string,stub shim.
 	userkey := userID
 	userph := phonenumber
 	var userphone []byte
-	userphone = ""
+	userphone = []byte("")
 	if userph != "" {
 		userph = strings.TrimSpace(phonenumber)
 		if len(userph) != 10 {
