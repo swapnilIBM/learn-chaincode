@@ -331,7 +331,7 @@ func (t *AirMilesChaincode) getmilesbetweendestinations(source string, destinati
 
 
 //geting the user details
-func (t *AirMilesChaincode) getUser(userID string, phonenumber string,stub shim.ChaincodeStubInterface)([]byte, error) {
+func (t *AirMilesChaincode) getuser(userID string, phonenumber string,stub shim.ChaincodeStubInterface)([]byte, error) {
 	fmt.Println("In query.GetUser start ")
 
 	userkey := userID
@@ -380,6 +380,8 @@ func (t *AirMilesChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
 		return t.write(stub, args)
+	} else if function == "addmilesbetweendestinations" {
+		return t.addmilesbetweendestinations(args[0], args[1], args[2], stub)
 	} else if function == "adduser" {
 		var testBytes []byte
 		fmt.Println("invoking adduser " + function)
@@ -420,7 +422,11 @@ func (t *AirMilesChaincode) Query(stub shim.ChaincodeStubInterface, function str
 		return t.getbalance(args[0] + "_" + args[1],stub)
 	} else if function == "getmilesid" { //Get a miles id 
 		return t.getmilesid(args[0],stub)
-	} else if function == "gettripdetails" { //Get a miles id 
+	} else if function == "getuser" { //Get a user 
+		return t.getuser(args[0],args[1],stub)
+	} else if function == "getmilesbetweendestinations" { //Get a miles for destinations 
+		return t.getmilesbetweendestinations(args[0],args[1],stub)
+	} else if function == "gettripdetails" { //Get a trip  
 		return t.gettripdetails(args[0],args[1],stub)
 	}
 	fmt.Println("query did not find func: " + function)
